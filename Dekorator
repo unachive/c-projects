@@ -1,0 +1,70 @@
+#include<iostream>
+#include<memory>
+#include<string>
+using namespace std;
+
+class pizza {
+float price;
+string name ;
+
+protected:
+pizza(float p,string n):price(p),name(n){}
+public:
+virtual ~pizza()=default;
+virtual float price_g() {return price;}
+virtual string name_g() {return name;}
+
+};
+
+class chesePizza : public pizza{
+public:
+chesePizza(float a= 3.4,string n ="chesePizza"):pizza(a,n){}
+
+};
+
+class mushroomPizza : public pizza{
+public:
+mushroomPizza(float a= 12,string n ="mushroomPizza"):pizza(a,n){}
+
+};
+
+class pizzaDek:public pizza{
+protected:
+unique_ptr<pizza> pizO;
+public:
+pizzaDek(unique_ptr<pizza> a):pizza(0,"raw"),pizO(move(a))  {}
+string name_g() override {return pizO->name_g()+ " with ";}
+};
+
+class extraChese :public pizzaDek{
+public:
+using pizzaDek::pizzaDek;
+float price_g() override{return pizO->price_g()+7.2;}
+string name_g() override {return pizzaDek::name_g() + "extraChese ";}
+
+};
+class extraBekon :public pizzaDek{
+public:
+using pizzaDek::pizzaDek;
+float price_g() override{return pizO->price_g()+10;}
+string name_g() override {return pizzaDek::name_g() + "extraBekon ";}
+
+};
+
+
+
+int main()
+{
+auto p1 = make_unique<chesePizza>();
+auto p2 = make_unique<mushroomPizza>();
+
+auto d1= make_unique<extraChese>(move(p1));
+auto d2 = make_unique<extraBekon>(move(p2));
+
+cout << d1->name_g() << "costs "
+<< d1->price_g() << endl;
+cout << d2->name_g() << "costs "
+<< d2->price_g() << endl;
+    
+    return 0;
+}
