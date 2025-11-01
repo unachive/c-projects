@@ -1,0 +1,60 @@
+#include<iostream>
+#include<memory>
+#include<vector>
+using namespace std;
+
+class faObject{
+public:
+virtual int tprice() =0;
+virtual ~faObject() = default;
+};
+
+class pig : public faObject {
+int price;
+public:
+pig (int a =1): price(a){}
+int tprice() override{return price;}
+
+};
+
+class sheep : public faObject {
+int price;
+public:
+sheep (int a =2): price(a){}
+int tprice() override{return price;}
+
+};
+
+class ranch : public faObject{
+vector<shared_ptr<faObject>> ra;
+public:
+int tprice()override;
+void add_a(shared_ptr<faObject> a){ra.push_back(a);}
+};
+
+int ranch::tprice(){
+int i{0};
+for (const auto& e :ra){
+i += e->tprice();
+}
+return i;
+
+
+}
+
+int main()
+{
+auto bigR = make_unique<ranch>();
+auto slimR = make_shared<ranch>();
+slimR->add_a(make_shared<sheep>(6));
+slimR->add_a(make_shared<sheep>(6));
+slimR->add_a(make_shared<sheep>(6));
+//big r add
+bigR->add_a(make_shared<pig>(2));
+bigR->add_a(make_shared<pig>(3));
+bigR->add_a(make_shared<pig>(4));
+bigR->add_a(slimR);
+
+cout <<bigR->tprice() <<endl;
+    return 0;
+}
