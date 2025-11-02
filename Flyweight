@@ -1,0 +1,67 @@
+#include<iostream>
+#include<memory>
+#include<string>
+#include<unordered_map>
+
+using namespace std;
+
+class bulletType {
+float weight;
+float Caliber;
+float AirEX;
+
+public:
+bulletType(float w,float c, float a): weight(w),Caliber(c),AirEX(a) {cout << "bullet with weight " <<
+w << " with caliber "<< c << " and extending lenght by " << a << " has been created\n";}
+virtual void shot() {}
+};
+
+class bullet {
+float x;
+shared_ptr<bulletType> a;
+public:
+bullet (float p,shared_ptr<bulletType> aptr): x(p),a(aptr) {}
+};
+
+class bulletFactory {
+     static unordered_map <string, shared_ptr<bulletType>> bullet_types;
+    public:
+    static shared_ptr<bulletType> getBulletType (float weight,float caliber,
+    float AirEX) {
+        string key = to_string(weight)+"_"+to_string(caliber)+"_"+to_string(AirEX);
+        if (bullet_types.find(key) ==bullet_types.end()) {
+           bullet_types[key] = make_shared<bulletType>(weight,caliber,AirEX);
+        }
+return bullet_types[key];
+
+    }
+
+
+
+
+};
+unordered_map<string, shared_ptr<bulletType>> bulletFactory::bullet_types;
+
+int main() 
+{
+    auto Sniper = bulletFactory::getBulletType(16.2f,8.6f,2.f);
+    auto Pistol = bulletFactory::getBulletType(7.45f,9.0f,1.f);
+    auto Rifle = bulletFactory::getBulletType(4.02f,5.56f,1.5f);
+
+    bullet Sniper_t(2,Sniper);
+    bullet Pistol_t(2,Pistol);
+    bullet Rifle_t(2,Rifle);
+
+    for (long i = 0;i<=100000;i++) {
+
+       bullet Sniper_t(i,Sniper); 
+bullet Rifle_t(i,Rifle);
+bullet Pistol_t(i,Pistol);
+    }
+
+
+    
+    
+    
+    return 0;
+}
