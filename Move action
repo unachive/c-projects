@@ -1,0 +1,44 @@
+#include<iostream>
+#include<utility>
+#include<vector>
+#include<initializer_list>
+
+
+void pritf(std::string a,const std::vector<std::string>& b){
+    using namespace std;
+cout << a << " ";
+for (auto &e:b){
+cout<<e<<": ";
+
+}
+cout << endl;
+}
+
+class vec {
+std::vector<std::string> a;
+public:
+vec(std::initializer_list<std::string> items): a(items) {}
+std::vector<std::string> get_vec() {return a;}
+vec(vec &rhs) = default;
+
+vec operator=(vec &&rhs)noexcept{
+    std::cout <<"move assignment operator is currently working\n";
+this->a = std::move(rhs.a);
+return *this;
+
+}
+
+};
+
+int main() {
+    vec a{"one","two","three"};
+    vec b{"five","sixth","seventh"};
+    pritf("a is equal to",a.get_vec());
+    pritf("b is equal to",b.get_vec());
+a = std::move(b);
+    
+    pritf("a is equal to",a.get_vec());
+    pritf("b is equal to",b.get_vec());
+
+    
+}
